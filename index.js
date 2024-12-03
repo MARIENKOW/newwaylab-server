@@ -9,6 +9,7 @@ import fileUpload from "express-fileupload";
 
 import telegramService from "./services/telegram-service.js";
 import ProductLineRouter from "./routers/ProductLineRouter.js";
+import SiteRouter from "./routers/SiteRouter.js";
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.use(process.env.NFT_FOLDER, express.static("./" + process.env.NFT_FOLDER));
 app.use("/Admin", AdminRouter);
 app.use("/Item", ItemRouter);
 app.use("/ProductLine", ProductLineRouter);
+app.use("", SiteRouter);
 
 const web = http.Server(app);
 

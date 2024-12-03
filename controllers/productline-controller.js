@@ -37,8 +37,32 @@ class Controller {
                },
             ],
          });
-         if (!productLineData)
-            return res.status(404).json("Not found product line");
+
+         return res.status(200).json(productLineData);
+      } catch (e) {
+         console.log(e);
+         res.status(500).json(e?.message);
+      }
+   };
+   getAllWithItems = async (req, res) => {
+      try {
+         const productLineData = await ProductLine.findAll({
+            include: [
+               {
+                  model: Item,
+                  as: "items",
+                  required: true,
+                  include: [
+                     {
+                        model: Img,
+                        as: "img",
+                        required: true,
+                     },
+                  ],
+               },
+            ],
+         });
+
          return res.status(200).json(productLineData);
       } catch (e) {
          console.log(e);

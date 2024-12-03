@@ -6,6 +6,7 @@ const ProductLineRouter = new Router();
 
 ProductLineRouter.post("/", autAdminMiddelware, ProductLineController.create);
 ProductLineRouter.get("/", ProductLineController.getAll);
+ProductLineRouter.get("/with-items", ProductLineController.getAllWithItems);
 ProductLineRouter.get(
    "/:id",
    autAdminMiddelware,

@@ -79,6 +79,11 @@ class Controller {
                   as: "img",
                   required: true,
                },
+               {
+                  model: ProductLine,
+                  as: "productLine",
+                  required: true,
+               },
             ],
          });
          if (!itemData) return res.status(404).json("Not found item");

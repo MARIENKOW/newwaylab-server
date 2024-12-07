@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import http from "http";
 import AdminRouter from "./routers/AdminRouter.js";
 import ItemRouter from "./routers/ItemRouter.js";
+import BlogRouter from "./routers/BlogRouter.js";
 import fileUpload from "express-fileupload";
 
 import telegramService from "./services/telegram-service.js";
@@ -30,6 +31,7 @@ app.use(
 app.use(process.env.NFT_FOLDER, express.static("./" + process.env.NFT_FOLDER));
 app.use("/Admin", AdminRouter);
 app.use("/Item", ItemRouter);
+app.use("/Blog", BlogRouter);
 app.use("/ProductLine", ProductLineRouter);
 app.use("", SiteRouter);
 

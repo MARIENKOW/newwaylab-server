@@ -1,6 +1,7 @@
 import { sequelize } from "../services/DB.js";
 import { DataTypes } from "@sequelize/core";
 import { Item } from "./Item.js";
+import { Blog } from "./Blog.js";
 
 export const Img = sequelize.define(
    "Img",
@@ -30,3 +31,4 @@ export const Img = sequelize.define(
 );
 
 Img.hasOne(Item, { foreignKey: "img_id" });
+Img.hasOne(Blog, { foreignKey: "img_id" });

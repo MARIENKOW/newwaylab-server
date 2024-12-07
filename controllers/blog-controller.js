@@ -1,34 +1,25 @@
 import { Op } from "sequelize";
-import { Item } from "../models/Item.js";
+import { Blog } from "../models/Blog.js";
 import imgService from "../services/img-service.js";
 import { Img } from "../models/Img.js";
-import { ProductLine } from "../models/productLine.js";
 
 class Controller {
    create = async (req, res) => {
       try {
-         const { name, productLine_id } = req.body;
+         const { title, body } = req.body;
 
          const img = req?.files?.img;
 
-         if (!name || !img || !productLine_id)
+         if (!title || !img || !body)
             return res.status(400).json({ "root.server": "Incorrect values" });
-
-         const productLineData = await ProductLine.findOne({
-            where: {
-               id: productLine_id,
-            },
-         });
-         if (!productLineData)
-            return res.status(404).json("Not found product line");
 
          const { img_id } = await imgService.save(img);
 
          try {
-            const { id } = await Item.create({
-               name,
+            const { id } = await Blog.create({
+               title,
                img_id,
-               productLine_id,
+               body,
             });
             return res.status(200).json(id);
          } catch (error) {
@@ -40,16 +31,9 @@ class Controller {
          res.status(500).json(e?.message);
       }
    };
-   getByLine = async (req, res) => {
+   getAll = async (req, res) => {
       try {
-         const { id } = req.params;
-         if (!id) return res.status(400).json("productLine_id is not found");
-
-         const ItemData = await Item.findAll({
-            where: {
-               productLine_id: id,
-            },
-            order: [["id", "DESC"]],
+         const blogData = await Blog.findAll({
             include: [
                {
                   model: Img,
@@ -57,10 +41,10 @@ class Controller {
                   required: true,
                },
             ],
+            order: [["id", "DESC"]],
          });
 
-         if (!ItemData) return res.status(404).json("Not found item");
-         return res.status(200).json(ItemData);
+         return res.status(200).json(blogData);
       } catch (e) {
          console.log(e);
          res.status(500).json(e?.message);
@@ -70,7 +54,7 @@ class Controller {
       try {
          const { id } = req.params;
          if (!id) return res.status(400).json("id is not found");
-         const itemData = await Item.findOne({
+         const blogData = await Blog.findOne({
             where: {
                id,
             },
@@ -80,15 +64,10 @@ class Controller {
                   as: "img",
                   required: true,
                },
-               {
-                  model: ProductLine,
-                  as: "productLine",
-                  required: true,
-               },
             ],
          });
-         if (!itemData) return res.status(404).json("Not found item");
-         return res.status(200).json(itemData);
+         if (!blogData) return res.status(404).json("Not found blog");
+         return res.status(200).json(blogData);
       } catch (e) {
          console.log(e);
          res.status(500).json(e?.message);
@@ -98,7 +77,7 @@ class Controller {
       try {
          const { id } = req.params;
          if (!id) return res.status(400).json("id is not found");
-         const itemData = await Item.findOne({
+         const blogData = await Blog.findOne({
             where: {
                id,
             },
@@ -111,14 +90,13 @@ class Controller {
             ],
          });
 
-         if (!itemData) return res.status(404).json("item is not found");
+         if (!blogData) return res.status(404).json("blog is not found");
 
-         const { img_id, img, id: item_id } = itemData;
+         const { img_id, id: blog_id } = blogData;
 
-         await itemData.destroy({ where: { id: item_id } });
+         await blogData.destroy({ where: { id: blog_id } });
 
          try {
-            console.log(img_id);
             await imgService.delete(img_id); //!   maybe delete
          } catch (error) {
             console.log(error);
@@ -141,7 +119,7 @@ class Controller {
          if (!data || !id)
             return res.status(400).json({ "root.server": "Incorrect values" });
 
-         const itemData = await Item.findOne({
+         const blogData = await Blog.findOne({
             where: {
                id,
             },
@@ -154,7 +132,7 @@ class Controller {
             ],
          });
 
-         if (!itemData) return res.status(404).json("item not found");
+         if (!blogData) return res.status(404).json("blog not found");
 
          if (img) {
             const imageData = await imgService.save(img);
@@ -162,11 +140,11 @@ class Controller {
          }
 
          try {
-            const updateUserData = await Item.update(
+            const updateUserData = await Blog.update(
                {
                   ...data,
                },
-               { where: { id: itemData.id } }
+               { where: { id: blogData.id } }
             );
          } catch (error) {
             if (img) {
@@ -176,13 +154,10 @@ class Controller {
          }
          try {
             if (img) {
-               console.log(itemData.img_id);
-               await imgService.delete(itemData.img_id);
+               await imgService.delete(blogData.img_id);
             }
-         } catch (error) {
-            console.log("not delete item img");
-         }
-         return res.status(200).json(itemData.id);
+         } catch (error) {}
+         return res.status(200).json(blogData.id);
       } catch (e) {
          console.log(e);
          res.status(500).json(e?.message);

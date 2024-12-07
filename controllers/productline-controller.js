@@ -36,6 +36,7 @@ class Controller {
                   ],
                },
             ],
+            order: [["id", "DESC"]],
          });
 
          return res.status(200).json(productLineData);
@@ -61,6 +62,7 @@ class Controller {
                   ],
                },
             ],
+            order: [["id", "DESC"]],
          });
 
          return res.status(200).json(productLineData);

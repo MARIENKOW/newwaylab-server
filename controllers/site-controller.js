@@ -26,7 +26,6 @@ class Controller {
          const siteData = await Site.findOne({
             order: [["id", "DESC"]],
          });
-
          res.status(200).json(siteData);
       } catch (e) {
          console.log(e);

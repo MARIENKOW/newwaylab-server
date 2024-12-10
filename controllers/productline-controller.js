@@ -1,6 +1,6 @@
 import { Item } from "../models/Item.js";
 import { Img } from "../models/Img.js";
-import { ProductLine } from "../models/productLine.js";
+import { ProductLine } from "../models/ProductLine.js";
 
 class Controller {
    create = async (req, res) => {

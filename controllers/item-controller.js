@@ -2,7 +2,7 @@ import { Op } from "sequelize";
 import { Item } from "../models/Item.js";
 import imgService from "../services/img-service.js";
 import { Img } from "../models/Img.js";
-import { ProductLine } from "../models/productLine.js";
+import { ProductLine } from "../models/ProductLine.js";
 
 class Controller {
    create = async (req, res) => {

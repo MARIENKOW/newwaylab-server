@@ -18,5 +18,11 @@ ProductLineRouter.delete(
    ProductLineController.delete
 );
 ProductLineRouter.put("/:id", autAdminMiddelware, ProductLineController.update);
+ProductLineRouter.put("/up/:id", autAdminMiddelware, ProductLineController.up);
+ProductLineRouter.put(
+   "/down/:id",
+   autAdminMiddelware,
+   ProductLineController.down
+);
 
 export default ProductLineRouter;

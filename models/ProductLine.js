@@ -13,7 +13,10 @@ export const ProductLine = sequelize.define(
       name: {
          type: DataTypes.STRING(100),
          allowNull: false,
-      }
+      },
+      place: {
+         type: DataTypes.INTEGER,
+      },
    },
    {
       tableName: "productLine",

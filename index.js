@@ -28,12 +28,12 @@ app.use(
    })
 );
 
-app.use(process.env.NFT_FOLDER, express.static("./" + process.env.NFT_FOLDER));
-app.use("/Admin", AdminRouter);
-app.use("/Item", ItemRouter);
-app.use("/Blog", BlogRouter);
-app.use("/ProductLine", ProductLineRouter);
-app.use("", SiteRouter);
+app.use("/api"+process.env.NFT_FOLDER, express.static("./" + process.env.NFT_FOLDER));
+app.use("/api/Admin", AdminRouter);
+app.use("/api/Item", ItemRouter);
+app.use("/api/Blog", BlogRouter);
+app.use("/api/ProductLine", ProductLineRouter);
+app.use("/api", SiteRouter);
 
 const web = http.Server(app);
 

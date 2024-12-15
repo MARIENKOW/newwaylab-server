@@ -3,6 +3,7 @@ import { Item } from "../models/Item.js";
 import imgService from "../services/img-service.js";
 import { Img } from "../models/Img.js";
 import { ProductLine } from "../models/ProductLine.js";
+import itemService from "../services/item-service.js";
 
 class Controller {
    create = async (req, res) => {
@@ -22,6 +23,22 @@ class Controller {
          if (!productLineData)
             return res.status(404).json("Not found product line");
 
+         let place = 0;
+
+         const itemsData = await Item.findAll({
+            order: [["place", "DESC"]],
+            limit: 1,
+            where: {
+               productLine_id,
+            },
+         });
+
+         if (itemsData.length !== 0) {
+            place = itemsData[0].place;
+         }
+
+         place++;
+
          const { img_id } = await imgService.save(img);
 
          try {
@@ -29,6 +46,7 @@ class Controller {
                name,
                img_id,
                productLine_id,
+               place,
             });
             return res.status(200).json(id);
          } catch (error) {
@@ -182,6 +200,126 @@ class Controller {
          } catch (error) {
             console.log("not delete item img");
          }
+         return res.status(200).json(itemData.id);
+      } catch (e) {
+         console.log(e);
+         res.status(500).json(e?.message);
+      }
+   };
+   up = async (req, res) => {
+      try {
+         const { id } = req.params;
+
+         if (!id)
+            return res.status(400).json({ "root.server": "Incorrect values" });
+
+         const itemData = await Item.findOne({
+            where: {
+               id,
+            },
+         });
+
+         if (!itemData) return res.status(404).json("item not found");
+
+         const checkItemPlace = await Item.findOne({
+            where: {
+               place: itemData.place,
+            },
+         });
+
+         if (checkItemPlace) {
+            await itemService.changePlaces(itemData.productLine_id);
+         }
+
+         const itemDataNew = await Item.findOne({
+            where: {
+               id,
+            },
+         });
+
+         const itemFirst = await Item.findOne({
+            where: {
+               place: { [Op.lt]: itemDataNew.place },
+            },
+            order: [["place", "DESC"]],
+         });
+
+         console.log(itemFirst);
+
+         if (!itemFirst) return res.status(400).json("item is first");
+
+         await Item.update(
+            {
+               place: itemFirst.place,
+            },
+            { where: { id: itemDataNew.id } }
+         );
+         await Item.update(
+            {
+               place: itemDataNew.place,
+            },
+            { where: { id: itemFirst.id } }
+         );
+
+         return res.status(200).json(itemData.id);
+      } catch (e) {
+         console.log(e);
+         res.status(500).json(e?.message);
+      }
+   };
+   down = async (req, res) => {
+      try {
+         const { id } = req.params;
+
+         if (!id)
+            return res.status(400).json({ "root.server": "Incorrect values" });
+
+         const itemData = await Item.findOne({
+            where: {
+               id,
+            },
+         });
+
+         if (!itemData) return res.status(404).json("item not found");
+
+         const checkItemPlace = await Item.findOne({
+            where: {
+               place: itemData.place,
+            },
+         });
+
+         if (checkItemPlace) {
+            await itemService.changePlaces(itemData.productLine_id);
+         }
+
+         const itemDataNew = await Item.findOne({
+            where: {
+               id,
+            },
+         });
+
+         const itemLast = await Item.findOne({
+            where: {
+               place: { [Op.gt]: itemDataNew.place },
+            },
+            order: [["place", "ASC"]],
+         });
+
+         if (!itemLast) return res.status(400).json("item is last");
+
+         await Item.update(
+            {
+               place: itemLast.place,
+            },
+            { where: { id: itemDataNew.id } }
+         );
+         await Item.update(
+            {
+               place: itemDataNew.place,
+            },
+            { where: { id: itemLast.id } }
+         );
+
          return res.status(200).json(itemData.id);
       } catch (e) {
          console.log(e);

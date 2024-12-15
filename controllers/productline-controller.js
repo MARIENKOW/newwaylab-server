@@ -79,7 +79,10 @@ class Controller {
                   ],
                },
             ],
-            order: [["place", "ASC"]],
+            order: [
+               ["place", "ASC"],
+               [{ model: Item }, "place", "ASC"],
+            ],
          });
 
          return res.status(200).json(productLineData);
@@ -108,6 +111,7 @@ class Controller {
                   ],
                },
             ],
+            order: [[{ model: Item }, "place", "ASC"]],
          });
          if (!productLineData)
             return res.status(404).json("Not found product line");

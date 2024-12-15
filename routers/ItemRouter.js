@@ -23,5 +23,7 @@ ItemRouter.get("/byLine/:id", ItemController.getByLine);
 ItemRouter.get("/:id", autAdminMiddelware, ItemController.getById);
 ItemRouter.delete("/:id", autAdminMiddelware, ItemController.delete);
 ItemRouter.put("/:id", autAdminMiddelware, ItemController.update);
+ItemRouter.put("/up/:id", autAdminMiddelware, ItemController.up);
+ItemRouter.put("/down/:id", autAdminMiddelware, ItemController.down);
 
 export default ItemRouter;

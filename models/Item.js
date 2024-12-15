@@ -1,7 +1,6 @@
 import { sequelize } from "../services/DB.js";
 import { DataTypes } from "@sequelize/core";
 
-
 export const Item = sequelize.define(
    "Item",
    {
@@ -26,11 +25,12 @@ export const Item = sequelize.define(
          type: DataTypes.INTEGER,
          allowNull: false,
       },
+      place: {
+         type: DataTypes.INTEGER,
+      },
    },
    {
       tableName: "item",
       timestamps: false,
    }
 );
-
-

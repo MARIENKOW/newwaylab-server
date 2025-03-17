@@ -29,6 +29,7 @@ app.use(
 );
 
 app.use("/api"+process.env.NFT_FOLDER, express.static("./" + process.env.NFT_FOLDER));
+app.use("/api/meta", express.static("./meta"));
 app.use("/api/Admin", AdminRouter);
 app.use("/api/Item", ItemRouter);
 app.use("/api/Blog", BlogRouter);
